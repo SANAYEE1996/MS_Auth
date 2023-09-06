@@ -1,4 +1,4 @@
-package com.example.ms_security;
+package com.ms.ms_security;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
