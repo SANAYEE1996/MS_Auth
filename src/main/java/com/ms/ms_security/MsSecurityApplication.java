@@ -1,4 +1,4 @@
-package com.example.ms_security;
+package com.ms.ms_security;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
