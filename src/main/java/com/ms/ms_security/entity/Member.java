@@ -27,6 +27,9 @@ public class Member {
     @Column(name = "password")
     private String memberPassword;
 
+    @Column(name = "name")
+    private String memberName;
+
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
