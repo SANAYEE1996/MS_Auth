@@ -35,15 +35,29 @@ public class MemberService {
         return jwtTokenProvider.generateToken(authentication);
     }
 
-    public Long saveMember(String email, String password, String name){
+    public void saveMember(String email, String password, String name){
         if(!memberRepository.existsByMemberEmail(email)){
-            return memberRepository.save(Member.builder()
-                    .memberEmail(email)
-                    .memberPassword(passwordEncoder.encode(password))
-                    .memberName(name)
-                    .build()).getId();
+            memberRepository.save(Member.builder()
+                                        .memberEmail(email)
+                                        .memberPassword(passwordEncoder.encode(password))
+                                        .memberName(name)
+                                        .build());
         }
         throw new RuntimeException("중복된 이메일 입니다.");
+    }
+
+    public void updateMember(Long id, String name, String password){
+        if(memberRepository.existsById(id)){
+            memberRepository.updateMemberInformation(name, passwordEncoder.encode(password), id);
+        }
+        throw new RuntimeException("Not enrolled Member ID !");
+    }
+
+    public void deleteMember(Long id){
+        if(memberRepository.existsById(id)){
+            memberRepository.deleteMemberInformation(id);
+        }
+        throw new RuntimeException("Not enrolled Member ID !");
     }
 
 }

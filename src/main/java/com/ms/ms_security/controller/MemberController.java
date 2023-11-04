@@ -2,6 +2,7 @@ package com.ms.ms_security.controller;
 
 
 import com.ms.ms_security.dto.MemberCreateDto;
+import com.ms.ms_security.dto.MemberDto;
 import com.ms.ms_security.dto.MemberLoginDto;
 import com.ms.ms_security.jwt.TokenInfo;
 import com.ms.ms_security.service.MemberService;
@@ -39,5 +40,27 @@ public class MemberController {
             return ResponseDto.builder().code(404).body(new ResponseBody<>("Join Fail")).message(e.getMessage()).build();
         }
         return ResponseDto.builder().code(200).body(new ResponseBody<>("Join Success")).message("ok").build();
+    }
+
+    @PostMapping("/update")
+    public ResponseDto update(@RequestBody @Valid MemberDto memberDto){
+        try {
+            memberService.updateMember(memberDto.getId(), memberDto.getName(), memberDto.getPassword());
+        }catch (RuntimeException e){
+            log.error(e.getMessage());
+            return ResponseDto.builder().code(404).body(new ResponseBody<>("UPDATE Fail")).message(e.getMessage()).build();
+        }
+        return ResponseDto.builder().code(200).body(new ResponseBody<>("UPDATE Success")).message("ok").build();
+    }
+
+    @PostMapping("/delete")
+    public ResponseDto delete(@RequestBody @Valid MemberDto memberDto){
+        try {
+            memberService.deleteMember(memberDto.getId());
+        }catch (RuntimeException e){
+            log.error(e.getMessage());
+            return ResponseDto.builder().code(404).body(new ResponseBody<>("DELETE Fail")).message(e.getMessage()).build();
+        }
+        return ResponseDto.builder().code(200).body(new ResponseBody<>("DELETE Success")).message("ok").build();
     }
 }
