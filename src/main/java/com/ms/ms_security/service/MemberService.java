@@ -36,28 +36,28 @@ public class MemberService {
     }
 
     public void saveMember(String email, String password, String name){
-        if(!memberRepository.existsByMemberEmail(email)){
-            memberRepository.save(Member.builder()
-                                        .memberEmail(email)
-                                        .memberPassword(passwordEncoder.encode(password))
-                                        .memberName(name)
-                                        .build());
+        if(memberRepository.existsByMemberEmail(email)){
+            throw new RuntimeException("중복된 이메일 입니다.");
         }
-        throw new RuntimeException("중복된 이메일 입니다.");
+        memberRepository.save(Member.builder()
+                                    .memberEmail(email)
+                                    .memberPassword(passwordEncoder.encode(password))
+                                    .memberName(name)
+                                    .build());
     }
 
     public void updateMember(Long id, String name, String password){
-        if(memberRepository.existsById(id)){
-            memberRepository.updateMemberInformation(name, passwordEncoder.encode(password), id);
+        if(!memberRepository.existsById(id)){
+            throw new RuntimeException("Not enrolled Member ID !");
         }
-        throw new RuntimeException("Not enrolled Member ID !");
+        memberRepository.updateMemberInformation(name, passwordEncoder.encode(password), id);
     }
 
     public void deleteMember(Long id){
-        if(memberRepository.existsById(id)){
-            memberRepository.deleteMemberInformation(id);
+        if(!memberRepository.existsById(id)){
+            throw new RuntimeException("Not enrolled Member ID !");
         }
-        throw new RuntimeException("Not enrolled Member ID !");
+        memberRepository.deleteMemberInformation(id);
     }
 
 }

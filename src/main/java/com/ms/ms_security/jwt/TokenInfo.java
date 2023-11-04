@@ -1,6 +1,5 @@
 package com.ms.ms_security.jwt;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Builder
