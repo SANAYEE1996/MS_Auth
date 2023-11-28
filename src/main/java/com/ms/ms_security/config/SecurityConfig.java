@@ -1,47 +1,49 @@
 package com.ms.ms_security.config;
 
 import com.ms.ms_security.jwt.JwtAuthenticationFilter;
-import com.ms.ms_security.jwt.JwtTokenProvider;
-import com.ms.ms_security.service.MemberDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import reactor.core.publisher.Mono;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtTokenProvider jwtTokenProvider;
-
-    private final MemberDetailService memberDetailService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests( auth -> auth
-                        .requestMatchers("/member/login","/member/join")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
-                .sessionManagement( session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .userDetailsService(memberDetailService)
+    public SecurityWebFilterChain filterChain(ServerHttpSecurity http){
+        return http.cors(withDefaults())
+                .csrf(withDefaults())
+                .authorizeExchange((authorize) -> authorize
+                        .pathMatchers("/member/join", "/member/login").permitAll()
+                        .anyExchange().authenticated()
+                )
+                .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .httpBasic(withDefaults())
+                .formLogin(withDefaults())
                 .build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
+    @Bean
+    public ReactiveAuthenticationManager authenticationManager() {
+        return authentication -> Mono.empty();
+    }
+
 }
