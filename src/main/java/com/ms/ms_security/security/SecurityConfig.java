@@ -1,4 +1,4 @@
-package com.ms.ms_security.config;
+package com.ms.ms_security.security;
 
 import com.ms.ms_security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,9 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http){
         return http.cors(withDefaults())
-                .csrf(withDefaults())
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange((authorize) -> authorize
-                        .pathMatchers("/member/join", "/member/login").permitAll()
+                        .pathMatchers("/auth/join", "/auth/login").permitAll()
                         .anyExchange().authenticated()
                 )
                 .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)

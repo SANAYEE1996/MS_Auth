@@ -1,5 +1,6 @@
 package com.ms.ms_security.service;
 
+import com.ms.ms_security.jwt.TokenInfo;
 import com.ms.ms_security.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,5 +40,19 @@ public class MemberServiceTest {
         String email = "dudtkd0218@gmail.com";
         String name = "킴킴킴";
         String password = "1234";
+    }
+
+    @Test
+    @DisplayName("login test")
+    void loginTest(){
+        String email = "dudtkd0219@gmail.com";
+        String password = "1234";
+
+        TokenInfo tokenInfo =  memberService.login(email,password).block();
+
+        System.out.println(tokenInfo.accessToken());
+        System.out.println(tokenInfo.grantType());
+        System.out.println(tokenInfo.message());
+        System.out.println(tokenInfo.refreshToken());
     }
 }

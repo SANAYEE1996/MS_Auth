@@ -1,9 +1,8 @@
 package com.ms.ms_security.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ms.ms_security.dto.MemberCreateDto;
-import com.ms.ms_security.dto.MemberLoginDto;
-import com.ms.ms_security.service.MemberDetailService;
+import com.ms.ms_security.dto.JoinDto;
+import com.ms.ms_security.dto.LoginDto;
 import com.ms.ms_security.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,18 +27,15 @@ public class MemberControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private MemberDetailService memberDetailService;
-
-    @Autowired
     private MemberService memberService;
 
 
     @DisplayName("member join test")
     @Test
     public void joinTest() throws Exception{
-        MemberCreateDto memberCreateDto = new MemberCreateDto("dudtkd0219@gmail.com", "1234", "박영상");
+        JoinDto joinDto = new JoinDto("dudtkd0219@gmail.com", "1234", "박영상");
 
-        String content = objectMapper.writeValueAsString(memberCreateDto);
+        String content = objectMapper.writeValueAsString(joinDto);
 
         mockMvc.perform(post("/member/join").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andExpect(status().isOk())
@@ -50,7 +46,7 @@ public class MemberControllerTest {
     @Test
     void LoginTest() throws Exception {
 
-        String content = objectMapper.writeValueAsString(new MemberLoginDto("dudtkd0219@gmail.com","1234"));
+        String content = objectMapper.writeValueAsString(new LoginDto("dudtkd0219@gmail.com","1234"));
 
         mockMvc.perform(post("/member/login").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andExpect(status().isOk())

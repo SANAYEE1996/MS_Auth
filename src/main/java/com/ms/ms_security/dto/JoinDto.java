@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberCreateDto {
+public class JoinDto {
 
     @NotBlank(message = "email must not Blank")
     private String email;
