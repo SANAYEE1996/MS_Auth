@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberLoginDto {
+public class LoginDto {
 
     @NotBlank(message = "memberEmail must not Blank")
-    private String memberEmail;
+    private String email;
 
     @NotBlank(message = "memberPassword must not Blank")
-    private String memberPassword;
+    private String password;
 }

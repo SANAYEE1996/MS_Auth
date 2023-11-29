@@ -1,15 +1,11 @@
 package com.ms.ms_security.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Entity(name = "member")
 @Getter
 @Builder
 @AllArgsConstructor
@@ -17,20 +13,12 @@ import java.util.List;
 public class Member {
 
     @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", unique = true)
-    private String memberEmail;
+    private String email;
 
-    @Column(name = "password")
-    private String memberPassword;
+    private String password;
 
-    @Column(name = "name")
-    private String memberName;
+    private String name;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
 }

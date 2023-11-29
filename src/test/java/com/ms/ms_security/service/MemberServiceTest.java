@@ -20,19 +20,38 @@ public class MemberServiceTest {
     private MemberRepository memberRepository;
 
     @Test
+    @DisplayName("save test")
+    void saveTest(){
+        String email = "qwer1234@gmail.com";
+        String password = "1234";
+        String name = "easy_name";
+
+        String saveResult = memberService.saveMember(email, password, name).block();
+        assertThat(saveResult).isEqualTo("member save success");
+
+        Member member = memberRepository.findByEmail(email).block();
+        assertThat(member.getEmail()).isEqualTo(email);
+        assertThat(member.getName()).isEqualTo(name);
+
+    }
+
+    @Test
     @DisplayName("update test")
     void updateTest(){
-        Long id = 1L;
+        Long id = 3L;
         String email = "dudtkd0219@gmail.com";
         String name = "박영상분신";
         String password = "5678";
-        memberService.updateMember(id,name,password);
 
-        Member member = memberRepository.findById(id).orElseThrow(()-> new RuntimeException("not enrolled id"));
-        TokenInfo tokenInfo = memberService.login(email, password);
+        String updateResult = memberService.updateMember(id, name, password).block();
+        assertThat(updateResult).isEqualTo("member update success");
 
-        assertThat(member.getMemberName()).isEqualTo(name);
-        assertThat(tokenInfo.accessToken()).isNotBlank();
+        Member member = memberRepository.findById(id).block();
+        assertThat(member.getName()).isEqualTo(name);
+
+        TokenInfo tokenInfo =  memberService.login(email,password).block();
+        assertThat(tokenInfo).isNotNull();
+
     }
 
     @Test
@@ -41,11 +60,29 @@ public class MemberServiceTest {
         String email = "dudtkd0218@gmail.com";
         String name = "킴킴킴";
         String password = "1234";
-        memberService.saveMember(email, password, name);
-        Member member = memberRepository.findByMemberEmail(email).orElseThrow(()-> new RuntimeException("not enrolled id"));
-        Long id = member.getId();
-        memberService.deleteMember(id);
 
-        assertThat(memberRepository.existsByMemberEmail(email)).isFalse();
+        memberService.saveMember(email, password, name).block();
+
+        Member member = memberRepository.findByEmail(email).block();
+
+        String deleteResult = memberService.deleteMember(member.getId()).block();
+        assertThat(deleteResult).isEqualTo("member delete success");
+
+        Member member1 = memberRepository.findByEmail(email).block();
+        assertThat(member1).isNull();
+    }
+
+    @Test
+    @DisplayName("login test")
+    void loginTest(){
+        String email = "dudtkd0219@gmail.com";
+        String password = "1234";
+
+        TokenInfo tokenInfo =  memberService.login(email,password).block();
+
+        System.out.println(tokenInfo.accessToken());
+        System.out.println(tokenInfo.grantType());
+        System.out.println(tokenInfo.message());
+        System.out.println(tokenInfo.refreshToken());
     }
 }
