@@ -2,6 +2,7 @@ package com.ms.ms_security.reactive;
 
 import com.ms.ms_security.dto.JoinDto;
 import com.ms.ms_security.dto.LoginDto;
+import com.ms.ms_security.dto.MemberDto;
 import com.ms.ms_security.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,18 @@ public class AuthHandler {
     public Mono<ServerResponse> join(ServerRequest request){
         return request.bodyToMono(JoinDto.class)
                 .flatMap(req -> memberService.saveMember(req.getEmail(), req.getPassword(), req.getName()))
+                .flatMap(result -> ServerResponse.ok().bodyValue(result));
+    }
+
+    public Mono<ServerResponse> delete(ServerRequest request){
+        return request.bodyToMono(MemberDto.class)
+                .flatMap(req -> memberService.deleteMember(req.getId()))
+                .flatMap(result -> ServerResponse.ok().bodyValue(result));
+    }
+
+    public Mono<ServerResponse> update(ServerRequest request){
+        return request.bodyToMono(MemberDto.class)
+                .flatMap(req -> memberService.updateMember(req.getId(), req.getName(), req.getPassword()))
                 .flatMap(result -> ServerResponse.ok().bodyValue(result));
     }
 }

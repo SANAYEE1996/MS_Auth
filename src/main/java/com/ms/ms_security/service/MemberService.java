@@ -38,16 +38,28 @@ public class MemberService {
                 }).map(jwtTokenProvider::generateToken);
     }
 
-    public Mono<Member> saveMember(String email, String password, String name){
-        return memberEmailExists(email).then(memberRepository.save(new Member(null, email, passwordEncoder.encode(password), name)));
+    public Mono<String> saveMember(String email, String password, String name){
+        return memberEmailExists(email)
+                .then(memberRepository.save(new Member(null, email, passwordEncoder.encode(password), name)))
+                .then(Mono.just("member save success"));
     }
 
-    public void updateMember(Long id, String name, String password){
-
+    public Mono<String> updateMember(Long id, String name, String password){
+        return memberRepository.findById(id).flatMap(member -> {
+            if(member == null){
+                return Mono.error(new RuntimeException(id+" is exist id !"));
+            }
+            return memberRepository.save(new Member(id, member.getEmail(), passwordEncoder.encode(password), name));
+        }).then(Mono.just("member update success"));
     }
 
-    public void deleteMember(Long id){
-
+    public Mono<String> deleteMember(Long id){
+        return memberRepository.findById(id).flatMap(member -> {
+            if(member == null){
+                return Mono.error(new RuntimeException(id+" is exist id !"));
+            }
+            return memberRepository.deleteById(id);
+        }).then(Mono.just("member delete success"));
     }
 
     private Mono<Void> memberEmailExists(String email){

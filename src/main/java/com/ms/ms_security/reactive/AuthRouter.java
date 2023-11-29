@@ -16,6 +16,8 @@ public class AuthRouter {
         return route()
                 .POST("/auth/login", accept(MediaType.APPLICATION_JSON), authHandler::login)
                 .POST("/auth/join", accept(MediaType.APPLICATION_JSON), authHandler::join)
+                .POST("/auth/delete", accept(MediaType.APPLICATION_JSON), authHandler::delete)
+                .POST("/auth/update", accept(MediaType.APPLICATION_JSON), authHandler::update)
                 .build();
     }
 }
