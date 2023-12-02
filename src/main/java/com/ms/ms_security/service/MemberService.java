@@ -34,7 +34,8 @@ public class MemberService {
                         log.info("User has been authenticated {}", username);
                         return Mono.just( new UsernamePasswordAuthenticationToken(username, user.getPassword(), null) );
                     }
-                    return Mono.just( new UsernamePasswordAuthenticationToken(username, token.getCredentials()) );
+                    log.info("password is not correct {}", rawPassword);
+                    return Mono.error(new RuntimeException("password is not correct"));
                 }).map(jwtTokenProvider::generateToken);
     }
 
@@ -51,6 +52,15 @@ public class MemberService {
             }
             return memberRepository.save(new Member(id, member.getEmail(), passwordEncoder.encode(password), name));
         }).then(Mono.just("member update success"));
+    }
+
+    public Mono<Member> getMemberInfo(Long id){
+        return memberRepository.findById(id).flatMap(member -> {
+            if(member == null){
+                return Mono.error(new RuntimeException(id+" is exist id !"));
+            }
+            return Mono.just(member);
+        });
     }
 
     public Mono<String> deleteMember(Long id){

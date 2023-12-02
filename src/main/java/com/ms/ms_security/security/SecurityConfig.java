@@ -28,11 +28,9 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange((authorize) -> authorize
                         .pathMatchers("/auth/join", "/auth/login").permitAll()
-                        .anyExchange().authenticated()
+                        .anyExchange().hasAnyAuthority()
                 )
-                .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-                .httpBasic(withDefaults())
-                .formLogin(withDefaults())
+                .addFilterAfter(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
 
