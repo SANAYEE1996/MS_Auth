@@ -1,11 +1,11 @@
-package com.ms.ms_security.service;
+package com.ms.ms_security.member;
 
-import com.ms.ms_security.entity.Member;
-import com.ms.ms_security.entity.Role;
+import com.ms.ms_security.member.Member;
+import com.ms.ms_security.member.Role;
 import com.ms.ms_security.jwt.JwtTokenProvider;
 import com.ms.ms_security.jwt.TokenInfo;
-import com.ms.ms_security.repository.MemberRepository;
-import com.ms.ms_security.repository.RoleRepository;
+import com.ms.ms_security.member.MemberRepository;
+import com.ms.ms_security.member.RoleRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

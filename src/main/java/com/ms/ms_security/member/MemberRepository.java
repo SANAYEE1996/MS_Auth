@@ -1,6 +1,6 @@
-package com.ms.ms_security.repository;
+package com.ms.ms_security.member;
 
-import com.ms.ms_security.entity.Member;
+import com.ms.ms_security.member.Member;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;

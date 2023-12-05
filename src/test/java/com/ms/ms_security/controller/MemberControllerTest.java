@@ -1,9 +1,9 @@
 package com.ms.ms_security.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ms.ms_security.dto.JoinDto;
-import com.ms.ms_security.dto.LoginDto;
-import com.ms.ms_security.service.MemberService;
+import com.ms.ms_security.member.JoinDto;
+import com.ms.ms_security.member.LoginDto;
+import com.ms.ms_security.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

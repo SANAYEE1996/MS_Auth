@@ -1,8 +1,9 @@
 package com.ms.ms_security.service;
 
-import com.ms.ms_security.entity.Member;
+import com.ms.ms_security.member.Member;
 import com.ms.ms_security.jwt.TokenInfo;
-import com.ms.ms_security.repository.MemberRepository;
+import com.ms.ms_security.member.MemberRepository;
+import com.ms.ms_security.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

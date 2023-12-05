@@ -1,21 +1,22 @@
-package com.ms.ms_security.entity;
+package com.ms.ms_security.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
+public class Member {
 
     @Id
     private Long id;
 
-    @Column("member_id")
-    private Long memberId;
+    private String email;
 
-    private String role;
+    private String password;
+
+    private String name;
+
 }

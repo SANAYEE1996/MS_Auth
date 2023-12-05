@@ -1,4 +1,4 @@
-package com.ms.ms_security.dto;
+package com.ms.ms_security.member;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

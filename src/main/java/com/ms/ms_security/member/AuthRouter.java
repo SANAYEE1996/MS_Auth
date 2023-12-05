@@ -1,4 +1,4 @@
-package com.ms.ms_security.reactive;
+package com.ms.ms_security.member;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
