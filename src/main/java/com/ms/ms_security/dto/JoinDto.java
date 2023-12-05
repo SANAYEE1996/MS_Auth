@@ -10,12 +10,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class JoinDto {
 
-    @NotBlank(message = "email must not Blank")
+    @NotBlank(message = "email must not be Blank")
     private String email;
 
-    @NotBlank(message = "password must not Blank")
+    @NotBlank(message = "password must not be Blank")
     private String password;
 
-    @NotBlank(message = "name must not Blank")
+    @NotBlank(message = "name must not be Blank")
     private String name;
+
+    @NotBlank(message = "role must not be Blank")
+    private String role;
 }

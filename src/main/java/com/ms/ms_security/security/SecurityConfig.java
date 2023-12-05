@@ -30,9 +30,7 @@ public class SecurityConfig {
                         .pathMatchers("/auth/join", "/auth/login").permitAll()
                         .anyExchange().authenticated()
                 )
-                .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-                .httpBasic(withDefaults())
-                .formLogin(withDefaults())
+                .addFilterAfter(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
 

@@ -1,12 +1,18 @@
 package com.ms.ms_security.service;
 
 import com.ms.ms_security.entity.Member;
+import com.ms.ms_security.entity.Role;
 import com.ms.ms_security.jwt.JwtTokenProvider;
 import com.ms.ms_security.jwt.TokenInfo;
 import com.ms.ms_security.repository.MemberRepository;
+import com.ms.ms_security.repository.RoleRepository;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +24,8 @@ import reactor.core.publisher.Mono;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    private final RoleRepository roleRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -32,15 +40,20 @@ public class MemberService {
                     final CharSequence rawPassword = token.getCredentials().toString();
                     if( passwordEncoder.matches(rawPassword, user.getPassword())){
                         log.info("User has been authenticated {}", username);
-                        return Mono.just( new UsernamePasswordAuthenticationToken(username, user.getPassword(), null) );
+                        return Mono.just(new loginCheck(user.getId(), username, user.getPassword()));
                     }
-                    return Mono.just( new UsernamePasswordAuthenticationToken(username, token.getCredentials()) );
-                }).map(jwtTokenProvider::generateToken);
+                    log.info("password is not correct {}", rawPassword);
+                    return Mono.error(new RuntimeException("password is not correct"));
+                })
+                .flatMap(user -> Mono.zip(Mono.just(user), roleRepository.findByMemberId(user.getId()).collectList())
+                        .flatMap(req -> Mono.just(new UsernamePasswordAuthenticationToken(req.getT1().getName(), req.getT1().getPassword(), req.getT2().stream().map(Role::getRole).toList().stream().map(SimpleGrantedAuthority::new).toList()))))
+                .map(jwtTokenProvider::generateToken);
     }
 
-    public Mono<String> saveMember(String email, String password, String name){
+    public Mono<String> saveMember(String email, String password, String name, String role){
         return memberEmailExists(email)
-                .then(memberRepository.save(new Member(null, email, passwordEncoder.encode(password), name)))
+                .then(Mono.defer(() -> memberRepository.save(new Member(null, email, passwordEncoder.encode(password), name))))
+                .flatMap(req -> roleRepository.save(new Role(null, req.getId(), role)))
                 .then(Mono.just("member save success"));
     }
 
@@ -51,6 +64,15 @@ public class MemberService {
             }
             return memberRepository.save(new Member(id, member.getEmail(), passwordEncoder.encode(password), name));
         }).then(Mono.just("member update success"));
+    }
+
+    public Mono<Member> getMemberInfo(Long id){
+        return memberRepository.findById(id).flatMap(member -> {
+            if(member == null){
+                return Mono.error(new RuntimeException(id+" is exist id !"));
+            }
+            return Mono.just(member);
+        });
     }
 
     public Mono<String> deleteMember(Long id){
@@ -70,6 +92,15 @@ public class MemberService {
                     }
                     return Mono.empty();
                 });
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class loginCheck{
+        private Long id;
+        private String name;
+        private String password;
     }
 
 }
