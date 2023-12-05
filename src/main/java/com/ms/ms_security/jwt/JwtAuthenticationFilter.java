@@ -1,5 +1,6 @@
 package com.ms.ms_security.jwt;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
@@ -12,6 +13,8 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -20,9 +23,9 @@ public class JwtAuthenticationFilter implements WebFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
+    public @NotNull Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
         String token = resolveToken(exchange);
-        log.debug("jwt filter in");
+        log.info("jwt filter in :: {}", token);
         if(token != null && jwtTokenProvider.validateToken(token)){
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             return chain.filter(exchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
@@ -31,7 +34,11 @@ public class JwtAuthenticationFilter implements WebFilter {
     }
 
     private String resolveToken(ServerWebExchange exchange) {
-        String bearerToken = exchange.getRequest().getHeaders().getFirst("Authorization ");
+        List<String> authList = exchange.getRequest().getHeaders().get("Authorization");
+        if(authList == null){
+            return null;
+        }
+        String bearerToken = authList.get(0);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
             return bearerToken.substring(7);
         }

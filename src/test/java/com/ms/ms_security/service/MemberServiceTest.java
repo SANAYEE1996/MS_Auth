@@ -26,7 +26,7 @@ public class MemberServiceTest {
         String password = "1234";
         String name = "easy_name";
 
-        String saveResult = memberService.saveMember(email, password, name).block();
+        String saveResult = memberService.saveMember(email, password, name, "admin").block();
         assertThat(saveResult).isEqualTo("member save success");
 
         Member member = memberRepository.findByEmail(email).block();
@@ -61,7 +61,7 @@ public class MemberServiceTest {
         String name = "킴킴킴";
         String password = "1234";
 
-        memberService.saveMember(email, password, name).block();
+        memberService.saveMember(email, password, name, "people").block();
 
         Member member = memberRepository.findByEmail(email).block();
 

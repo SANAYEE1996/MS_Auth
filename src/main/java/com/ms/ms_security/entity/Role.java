@@ -4,19 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Member {
+public class Role {
 
     @Id
     private Long id;
 
-    private String email;
+    @Column("member_id")
+    private Long memberId;
 
-    private String password;
-
-    private String name;
-
+    private String role;
 }

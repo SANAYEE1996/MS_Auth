@@ -27,7 +27,7 @@ public class AuthHandler {
 
     public Mono<ServerResponse> join(ServerRequest request){
         return request.bodyToMono(JoinDto.class)
-                .flatMap(req -> memberService.saveMember(req.getEmail(), req.getPassword(), req.getName()))
+                .flatMap(req -> memberService.saveMember(req.getEmail(), req.getPassword(), req.getName(), req.getRole()))
                 .flatMap(result -> ServerResponse.ok().bodyValue(result));
     }
 
