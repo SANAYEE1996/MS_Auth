@@ -47,6 +47,6 @@ public class AuthHandler {
     public Mono<ServerResponse> info(ServerRequest request){
         Long id = Long.valueOf(request.pathVariable("id"));
         log.debug("check request success");
-        return memberService.getMemberInfo(id).flatMap(req -> ServerResponse.ok().bodyValue(new MemberDto(id, req.getName(), "secret")));
+        return memberService.getMemberInfo(id).flatMap(req -> ServerResponse.ok().bodyValue(new MemberInfoDto(id, req.getEmail(), req.getName())));
     }
 }
