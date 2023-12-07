@@ -1,4 +1,4 @@
-package com.ms.ms_security.security;
+package com.ms.ms_security.config;
 
 import com.ms.ms_security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;

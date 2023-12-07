@@ -1,9 +1,5 @@
-package com.ms.ms_security.reactive;
+package com.ms.ms_security.member;
 
-import com.ms.ms_security.dto.JoinDto;
-import com.ms.ms_security.dto.LoginDto;
-import com.ms.ms_security.dto.MemberDto;
-import com.ms.ms_security.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -51,6 +47,6 @@ public class AuthHandler {
     public Mono<ServerResponse> info(ServerRequest request){
         Long id = Long.valueOf(request.pathVariable("id"));
         log.debug("check request success");
-        return memberService.getMemberInfo(id).flatMap(req -> ServerResponse.ok().bodyValue(new MemberDto(id, req.getName(), "secret")));
+        return memberService.getMemberInfo(id).flatMap(req -> ServerResponse.ok().bodyValue(new MemberInfoDto(id, req.getEmail(), req.getName())));
     }
 }
