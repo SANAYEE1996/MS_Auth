@@ -1,11 +1,15 @@
 package com.ms.ms_security.member;
 
+import com.ms.ms_security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @Component("authHandler")
@@ -13,6 +17,8 @@ import reactor.core.publisher.Mono;
 public class AuthHandler {
 
     private final MemberService memberService;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     public Mono<ServerResponse> login(ServerRequest request){
         return request.bodyToMono(LoginDto.class)
@@ -40,13 +46,12 @@ public class AuthHandler {
     }
 
     public Mono<ServerResponse> check(ServerRequest request){
-        log.debug("check request success");
-        return ServerResponse.ok().bodyValue("check");
-    }
-
-    public Mono<ServerResponse> info(ServerRequest request){
-        Long id = Long.valueOf(request.pathVariable("id"));
-        log.debug("check request success");
-        return memberService.getMemberInfo(id).flatMap(req -> ServerResponse.ok().bodyValue(new MemberInfoDto(id, req.getEmail(), req.getName())));
+        List<String> authList = request.headers().header("Authorization");
+        if(authList.isEmpty()){
+            return ServerResponse.badRequest().bodyValue(new MemberInfoDto());
+        }
+        Authentication authentication = jwtTokenProvider.getAuthentication(authList.get(0).substring(7));
+        return memberService.getMemberInfo(authentication.getName())
+                .flatMap(req -> ServerResponse.ok().bodyValue(new MemberInfoDto(req.getId(), req.getEmail(), req.getName())));
     }
 }

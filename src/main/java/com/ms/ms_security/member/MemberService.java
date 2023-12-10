@@ -1,11 +1,7 @@
 package com.ms.ms_security.member;
 
-import com.ms.ms_security.member.Member;
-import com.ms.ms_security.member.Role;
 import com.ms.ms_security.jwt.JwtTokenProvider;
 import com.ms.ms_security.jwt.TokenInfo;
-import com.ms.ms_security.member.MemberRepository;
-import com.ms.ms_security.member.RoleRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,10 +62,10 @@ public class MemberService {
         }).then(Mono.just("member update success"));
     }
 
-    public Mono<Member> getMemberInfo(Long id){
-        return memberRepository.findById(id).flatMap(member -> {
+    public Mono<Member> getMemberInfo(String email){
+        return memberRepository.findByEmail(email).flatMap(member -> {
             if(member == null){
-                return Mono.error(new RuntimeException(id+" is exist id !"));
+                return Mono.error(new RuntimeException(email+" is exist email !"));
             }
             return Mono.just(member);
         });

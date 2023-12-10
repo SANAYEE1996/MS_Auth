@@ -19,7 +19,6 @@ public class AuthRouter {
                 .POST("/auth/delete", accept(MediaType.APPLICATION_JSON), authHandler::delete)
                 .POST("/auth/update", accept(MediaType.APPLICATION_JSON), authHandler::update)
                 .GET("/auth/check", authHandler::check)
-                .GET("/auth/info/{id}", authHandler::info)
                 .build();
     }
 }
